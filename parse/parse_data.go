@@ -17,7 +17,7 @@ type Pointer struct {
 
 type Word struct {
 	Word  string // word
-	LexId string // lex_id
+	LexId int    // lex_id
 }
 
 type Synset struct {
@@ -27,7 +27,7 @@ type Synset struct {
 	Words              []Word    // word + lex_id
 	SynsetPointerCount int       // p_cnt
 	SynsetPointers     []Pointer // ptr
-	Definition         string    // gloss
+	Definitions        []string  // gloss
 	Examples           []string  // gloss
 }
 
@@ -48,12 +48,17 @@ func Synsets() (synsets []Synset) {
 
 		metaParts := strings.Split(meta, " ")
 
-		gloss := strings.Split(parts[1], "; ")
-		definition := gloss[0]
-		examples := gloss[1:]
+		var definitions []string
+		var examples []string
 
-		for iny := range examples {
-			examples[iny] = strings.Trim(examples[iny], " \"'")
+		gloss := strings.Split(parts[1], "; ")
+		for _, fragment := range gloss {
+			//examples[iny] = strings.Trim(examples[iny], " \"'")
+			if strings.HasPrefix(fragment, "\"") {
+				examples = append(examples, strings.Trim(fragment, " \"'"))
+			} else {
+				definitions = append(definitions, strings.TrimSpace(fragment))
+			}
 		}
 
 		// n    NOUN
@@ -74,11 +79,18 @@ func Synsets() (synsets []Synset) {
 
 		var words []Word
 		for iny := 0; iny < wCnt; iny++ {
-			word := Word{
-				Word:  metaParts[offset+iny*2],
-				LexId: metaParts[offset+iny*2+1],
+			word := metaParts[offset+iny*2]
+			lexId := metaParts[offset+iny*2+1]
+
+			lexId64, err := strconv.ParseInt(lexId, 16, 64)
+			if err != nil {
+				log.Fatalf("cloudn't parse int %v", metaParts)
 			}
-			words = append(words, word)
+
+			words = append(words, Word{
+				Word:  word,
+				LexId: int(lexId64),
+			})
 		}
 
 		offset += wCnt * 2
@@ -125,7 +137,7 @@ func Synsets() (synsets []Synset) {
 			Words:              words,
 			SynsetPointerCount: pCnt,
 			SynsetPointers:     pointers,
-			Definition:         definition,
+			Definitions:        definitions,
 			Examples:           examples,
 		}
 
