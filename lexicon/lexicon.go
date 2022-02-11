@@ -1,9 +1,6 @@
-package main
+package lexicon
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
 	"sort"
 	"wordnet/parse"
 	"wordnet/utils"
@@ -68,57 +65,33 @@ type Sense struct {
 	Misc        map[string][]string
 }
 
-type LexiconEntry struct {
+type Entry struct {
 	Word   string
 	Senses []Sense
 }
 
-func init() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-}
+func Get(search string) (entry Entry) {
 
-func main() {
+	entry = Entry{
+		Word: search,
+	}
 
-	synsets := parse.Synsets()
-
-	wordIndex := make(map[int][]string)
+	var synsets []parse.Synset
+	for pointer := range index[search] {
+		synsets = append(synsets, data[pointer])
+	}
 
 	for _, synset := range synsets {
-		for _, word := range synset.Words {
-			wordIndex[synset.Id] = append(wordIndex[synset.Id], word.Word)
-		}
-	}
-
-	lex := LexiconEntry{
-		Word: "count",
-	}
-
-	for _, synset := range synsets[:] {
-
-		var contains bool
-
-		for _, word := range synset.Words {
-			if word.Word == lex.Word {
-				contains = true
-				break
-			}
-		}
-
-		if !contains {
-			continue
-		}
-
 		sense := Sense{
 			Index:       0,
 			Pos:         synsetTypeMapping[synset.SynsetType],
-			Synonyms:    nil,
 			Definitions: synset.Definitions,
 			Examples:    synset.Examples,
 			Misc:        make(map[string][]string),
 		}
 
 		for _, word := range synset.Words {
-			if word.Word != lex.Word {
+			if word.Word != entry.Word {
 				sense.Synonyms = append(sense.Synonyms, word.Word)
 			} else {
 				sense.Index = word.LexId
@@ -127,8 +100,10 @@ func main() {
 
 		for _, pointer := range synset.SynsetPointers {
 			name := symbolMapping[pointer.Symbol]
-			list := wordIndex[pointer.Id]
-			sense.Misc[name] = append(sense.Misc[name], list...)
+
+			for _, word := range data[pointer.Id].Words {
+				sense.Misc[name] = append(sense.Misc[name], word.Word)
+			}
 		}
 
 		for name, list := range sense.Misc {
@@ -136,18 +111,25 @@ func main() {
 			sort.Strings(sense.Misc[name])
 		}
 
-		lex.Senses = append(lex.Senses, sense)
+		entry.Senses = append(entry.Senses, sense)
 
 		//byt, _ := json.MarshalIndent(synset, "", "  ")
 		//log.Printf("%s", byt)
 	}
 
-	sort.Slice(lex.Senses, func(i, j int) bool {
-		return lex.Senses[i].Index < lex.Senses[j].Index
+	sort.Slice(entry.Senses, func(i, j int) bool {
+		return entry.Senses[i].Index < entry.Senses[j].Index
 	})
 
-	byt, _ := json.MarshalIndent(lex, "", "  ")
-	log.Printf("lex=%s", byt)
+	return
+}
 
-	_ = ioutil.WriteFile("dumb/dumb.json", byt, 0755)
+func Words() (words []string) {
+	for word := range index {
+		words = append(words, word)
+	}
+
+	sort.Strings(words)
+
+	return
 }

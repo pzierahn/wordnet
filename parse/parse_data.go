@@ -4,7 +4,6 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"wordnet/assets"
 )
 
 type Pointer struct {
@@ -34,7 +33,7 @@ type Synset struct {
 func Synsets() (synsets []Synset) {
 	// https://wordnet.princeton.edu/documentation/wndb5wn
 
-	data := assets.DataPOS()
+	data := readAll("data.", "")
 
 	for _, record := range data {
 		id, err := strconv.Atoi(record[:8])
