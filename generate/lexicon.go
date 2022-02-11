@@ -37,5 +37,9 @@ func Lexicon() {
 	utils.ExportJson("lexicon/synsetIndex.json", synsetIndex)
 	utils.ExportGob("lexicon/synsetIndex.gob", synsetIndex)
 
+	exceptions := parse.Exc()
+	utils.ExportJson("lexicon/exceptions.json", exceptions)
+	utils.ExportGob("lexicon/exceptions.gob", exceptions)
+
 	return
 }

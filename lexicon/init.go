@@ -13,9 +13,12 @@ var (
 	lemmasRaw []byte
 	//go:embed synsetIndex.gob
 	synsetsRaw []byte
+	//go:embed exceptions.gob
+	exceptionsRaw []byte
 
-	index generate.LemmaPointers
-	data  generate.SynsetIndex
+	index      generate.LemmaPointers
+	data       generate.SynsetIndex
+	exceptions map[string]string
 )
 
 func init() {
@@ -28,6 +31,10 @@ func init() {
 	}
 
 	if err := utils.UnmarshalGob(synsetsRaw, &data); err != nil {
+		log.Fatalf("error UnmarshalGob: %v", err)
+	}
+
+	if err := utils.UnmarshalGob(exceptionsRaw, &exceptions); err != nil {
 		log.Fatalf("error UnmarshalGob: %v", err)
 	}
 
