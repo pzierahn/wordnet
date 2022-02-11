@@ -72,6 +72,10 @@ type Entry struct {
 
 func Get(search string) (entry Entry) {
 
+	if word, ok := exceptions[search]; ok {
+		search = word
+	}
+
 	entry = Entry{
 		Word: search,
 	}
