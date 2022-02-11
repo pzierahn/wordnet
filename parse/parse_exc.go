@@ -14,7 +14,11 @@ func Exc() (mapping map[string]string) {
 	for _, parts := range parsedLines {
 		word := parts[len(parts)-1]
 
-		for _, syn := range parts[:len(parts)-2] {
+		for _, syn := range parts[:len(parts)-1] {
+			if syn == word {
+				continue
+			}
+
 			mapping[syn] = word
 		}
 	}
