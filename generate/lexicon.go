@@ -5,7 +5,7 @@ import (
 	"wordnet/utils"
 )
 
-type LemmaPointers map[string]map[int]bool
+type LemmaPointers map[string][]int
 type SynsetIndex map[int]parse.Synset
 
 func Lexicon() {
@@ -15,14 +15,7 @@ func Lexicon() {
 	for _, entry := range index {
 		//log.Printf("Word=%s pointers=%v", entry.Lemma, entry.SynsetPointer)
 		word := entry.Lemma
-
-		if _, exist := lemmaPointers[word]; !exist {
-			lemmaPointers[word] = make(map[int]bool)
-		}
-
-		for _, pointer := range entry.SynsetPointer {
-			lemmaPointers[word][pointer] = true
-		}
+		lemmaPointers[word] = append(lemmaPointers[word], entry.SynsetPointer...)
 	}
 
 	utils.ExportJson("lexicon/lemmaPointers.json", lemmaPointers)

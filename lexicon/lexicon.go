@@ -57,7 +57,6 @@ var synsetTypeMapping = map[string]string{
 }
 
 type Sense struct {
-	Index       int
 	Pos         string
 	Synonyms    []string
 	Definitions []string
@@ -81,13 +80,12 @@ func Get(search string) (entry Entry) {
 	}
 
 	var synsets []parse.Synset
-	for pointer := range index[search] {
+	for _, pointer := range index[search] {
 		synsets = append(synsets, data[pointer])
 	}
 
 	for _, synset := range synsets {
 		sense := Sense{
-			Index:       0,
 			Pos:         synsetTypeMapping[synset.SynsetType],
 			Definitions: synset.Definitions,
 			Examples:    synset.Examples,
@@ -97,8 +95,6 @@ func Get(search string) (entry Entry) {
 		for _, word := range synset.Words {
 			if word.Word != entry.Word {
 				sense.Synonyms = append(sense.Synonyms, word.Word)
-			} else {
-				sense.Index = word.LexId
 			}
 		}
 
@@ -120,10 +116,6 @@ func Get(search string) (entry Entry) {
 		//byt, _ := json.MarshalIndent(synset, "", "  ")
 		//log.Printf("%s", byt)
 	}
-
-	sort.Slice(entry.Senses, func(i, j int) bool {
-		return entry.Senses[i].Index < entry.Senses[j].Index
-	})
 
 	return
 }
