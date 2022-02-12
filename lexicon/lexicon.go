@@ -1,9 +1,9 @@
 package lexicon
 
 import (
+	"github.com/pzierahn/wordnet/parse"
+	"github.com/pzierahn/wordnet/utils"
 	"sort"
-	"wordnet/parse"
-	"wordnet/utils"
 )
 
 // https://wordnet.princeton.edu/documentation/wninput5wn
@@ -69,6 +69,7 @@ type Entry struct {
 	Senses []Sense
 }
 
+// Get returns all definitions.
 func Get(search string) (entry Entry) {
 
 	if word, ok := exceptions[search]; ok {
@@ -120,6 +121,7 @@ func Get(search string) (entry Entry) {
 	return
 }
 
+// Words returns all words in the lexicon.
 func Words() (words []string) {
 	for word := range index {
 		words = append(words, word)

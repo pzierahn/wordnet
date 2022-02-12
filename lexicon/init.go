@@ -2,10 +2,10 @@ package lexicon
 
 import (
 	_ "embed"
+	"github.com/pzierahn/wordnet/generate"
+	"github.com/pzierahn/wordnet/utils"
 	"log"
 	"time"
-	"wordnet/generate"
-	"wordnet/utils"
 )
 
 var (
