@@ -1,0 +1,2 @@
+lexicon/*.json filter=lfs diff=lfs merge=lfs -text
+*.gob filter=lfs diff=lfs merge=lfs -text
