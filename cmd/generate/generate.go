@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/pzierahn/wordnet/generate"
 	"log"
-	"wordnet/generate"
 )
 
 func init() {

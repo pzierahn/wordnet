@@ -1,8 +1,8 @@
 package generate
 
 import (
-	"wordnet/parse"
-	"wordnet/utils"
+	"github.com/pzierahn/wordnet/parse"
+	"github.com/pzierahn/wordnet/utils"
 )
 
 type LemmaPointers map[string][]int

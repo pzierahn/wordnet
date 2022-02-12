@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/pzierahn/wordnet/lexicon"
 	"log"
 	"time"
-	"wordnet/lexicon"
 )
 
 func init() {
