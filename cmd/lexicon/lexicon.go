@@ -15,7 +15,7 @@ func main() {
 
 	start := time.Now()
 
-	entry := lexicon.Get("fold")
+	entry := lexicon.Get("adjust")
 	byt, err := json.MarshalIndent(entry, "", "  ")
 	if err != nil {
 		log.Fatalf("cloudn't marshal json: %v", err)
