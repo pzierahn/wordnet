@@ -38,7 +38,7 @@ func init() {
 		log.Fatalf("error UnmarshalGob: %v", err)
 	}
 
-	log.Printf("init time: %v", time.Now().Sub(start))
+	log.Printf("init successfull: %v", time.Now().Sub(start))
 	//log.Printf("index=%v", len(index))
 	//log.Printf("data=%v", len(data))
 }
