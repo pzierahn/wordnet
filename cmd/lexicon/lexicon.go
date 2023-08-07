@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/pzierahn/wordnet/lexicon"
 	"log"
+	"os"
 	"time"
 )
 
@@ -15,7 +16,13 @@ func main() {
 
 	start := time.Now()
 
-	entry := lexicon.Get("adjust")
+	if len(os.Args) < 2 {
+		log.Fatalln("missing word")
+	}
+
+	word := os.Args[1]
+
+	entry := lexicon.Get(word)
 	byt, err := json.MarshalIndent(entry, "", "  ")
 	if err != nil {
 		log.Fatalf("cloudn't marshal json: %v", err)
